@@ -1,0 +1,199 @@
+version: '3.5'
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+volumes:
+  mysql:
+    driver: local
+  docker-in-docker:
+    driver: local
+
+services:
+
+### Workspace Utilities ##################################
+    workspace:
+      build:
+        context: ./docker/workspace
+        args:
+          - BASE_IMAGE_TAG_PREFIX=latest
+          - LARADOCK_PHP_VERSION=8.0
+          - INSTALL_PHPREDIS=true
+          - INSTALL_NODE=true
+          - NPM_REGISTRY=
+          - NPM_FETCH_RETRIES=2
+          - NPM_FETCH_RETRY_FACTOR=10
+          - NPM_FETCH_RETRY_MINTIMEOUT=10000
+          - NPM_FETCH_RETRY_MAXTIMEOUT=60000
+          - INSTALL_YARN=true
+          - INSTALL_NPM_GULP=true
+          - INSTALL_NPM_VUE_CLI=true
+          - COMPOSER_GLOBAL_INSTALL=true
+          - COMPOSER_VERSION=2
+          - COMPOSER_REPO_PACKAGIST=
+          - PUID=1000
+          - PGID=1000
+          - CHROME_DRIVER_VERSION=2.42
+          - NODE_VERSION=node
+          - TZ=UTC
+          - INSTALL_MEMCACHED=true
+          - http_proxy
+          - https_proxy
+          - no_proxy
+      volumes:
+        - ./:/var/www:cached
+        - docker-in-docker:/certs/client
+        - ./docker/php-worker/supervisord.d:/etc/supervisord.d
+      extra_hosts:
+        - "dockerhost:10.0.75.1"
+      ports:
+        - "2222:22"
+        - "8080:8080"
+        - "8001:8000"
+      tty: true
+      environment:
+        - PHP_IDE_CONFIG=serverName=laradock
+        - DOCKER_HOST=tcp://docker-in-docker:2376
+        - DOCKER_TLS_VERIFY=1
+        - DOCKER_TLS_CERTDIR=/certs
+        - DOCKER_CERT_PATH=/certs/client
+        - CHOKIDAR_USEPOLLING=true
+      networks:
+        - frontend
+        - backend
+      links:
+        - docker-in-docker
+
+### PHP-FPM ##############################################
+    php-fpm:
+      build:
+        context: ./docker/php-fpm
+        args:
+          - BASE_IMAGE_TAG_PREFIX=latest
+          - LARADOCK_PHP_VERSION=8.0
+          - INSTALL_PHPREDIS=true
+          - INSTALL_MEMCACHED=true
+          - INSTALL_OPCACHE=true
+          - PUID=1000
+          - PGID=1000
+          - LOCALE=POSIX
+          - http_proxy
+          - https_proxy
+          - no_proxy
+      volumes:
+        - ./docker/php-fpm/php8.0.ini:/usr/local/etc/php/php.ini
+        - ./:/var/www:cached
+        - docker-in-docker:/certs/client
+      ports:
+        - "9003:9003"
+      expose:
+        - "9000"
+      extra_hosts:
+        - "dockerhost:10.0.75.1"
+      environment:
+        - PHP_IDE_CONFIG=serverName=laradock
+        - DOCKER_HOST=tcp://docker-in-docker:2376
+        - DOCKER_TLS_VERIFY=1
+        - DOCKER_TLS_CERTDIR=/certs
+        - DOCKER_CERT_PATH=/certs/client
+        - FAKETIME=-0
+      depends_on:
+        - workspace
+      networks:
+        - backend
+      links:
+        - docker-in-docker
+
+### PHP Worker ############################################
+    php-worker:
+      build:
+        context: ./docker/php-worker
+        args:
+          - LARADOCK_PHP_VERSION=8.0
+          - INSTALL_MEMCACHED=true
+          - INSTALL_REDIS=true
+          - PUID=1000
+          - PGID=1000
+      volumes:
+        - ./:/var/www:cached
+        - ./docker/php-worker/supervisord.d:/etc/supervisord.d
+      depends_on:
+        - workspace
+      extra_hosts:
+        - "dockerhost:10.0.75.1"
+      networks:
+        - backend
+
+### NGINX Server #########################################
+    nginx:
+      build:
+        context: ./docker/nginx
+        args:
+          - PHP_UPSTREAM_CONTAINER=php-fpm
+          - PHP_UPSTREAM_PORT=9000
+          - http_proxy
+          - https_proxy
+          - no_proxy
+      volumes:
+        - ./:/var/www:cached
+        - ./docker/logs/nginx/:/var/log/nginx
+        - ./docker/nginx/sites/:/etc/nginx/sites-available
+        - ./docker/nginx/ssl/:/etc/nginx/ssl
+      ports:
+        - "80:80"
+        - "442:443"
+        - "81:81"
+      depends_on:
+        - php-fpm
+      networks:
+        - frontend
+        - backend
+
+### MySQL ################################################
+    mysql:
+      build:
+        context: ./docker/mysql
+        args:
+          - MYSQL_VERSION=latest
+      environment:
+        - MYSQL_DATABASE=${DB_DATABASE}
+        - MYSQL_USER=${DB_USERNAME}
+        - MYSQL_PASSWORD=${DB_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=root
+        - TZ=UTC
+      volumes:
+        - ./docker/data/mysql:/var/lib/mysql
+        - ./docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      ports:
+        - "3306:3306"
+      networks:
+        - backend
+
+### Certbot #########################################
+    certbot:
+      build:
+        context: ./docker/certbot
+      volumes:
+        - ./docker/data/certbot/certs/:/var/certs
+        - ./docker/certbot/letsencrypt/:/var/www/letsencrypt
+      environment:
+        - CN="fake.domain.com"
+        - EMAIL="fake.email@gmail.com"
+      networks:
+        - frontend
+
+### Docker-in-Docker ################################################
+    docker-in-docker:
+      image: docker:19.03-dind
+      environment:
+        DOCKER_TLS_SAN: DNS:docker-in-docker
+      privileged: true
+      volumes:
+        - ./:/var/www
+        - docker-in-docker:/certs/client
+      expose:
+        - 2375
+      networks:
+        - backend

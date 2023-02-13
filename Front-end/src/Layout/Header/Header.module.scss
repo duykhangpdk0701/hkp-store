@@ -1,0 +1,32 @@
+.middle_inner {
+  padding: 0 30px;
+  padding-top: 40px;
+  align-items: center;
+  padding-bottom: 40px;
+  position: relative;
+}
+
+.searchBar {
+  width: 274px !important;
+  border-radius: 30px !important;
+  padding: 7px 15px !important;
+}
+
+.horizontal_menu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ul {
+  display: flex;
+  list-style: none;
+  justify-content: space-around;
+  align-self: center;
+  margin: 0;
+}
+
+.logoContainer {
+  text-align: center;
+}

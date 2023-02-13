@@ -1,0 +1,13 @@
+.price {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.titleItem {
+  color: #999 !important;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: blue !important;
+  }
+}

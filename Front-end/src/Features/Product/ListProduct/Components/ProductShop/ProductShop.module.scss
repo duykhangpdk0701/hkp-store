@@ -1,0 +1,21 @@
+.content {
+  h3 {
+    font-size: 12px;
+  }
+
+  h3 a {
+    color: #999;
+  }
+
+  span {
+    font-size: 13px;
+    font-weight: 500;
+    color: #242424;
+  }
+
+  span.oldPrice {
+    color: #a4a4a4;
+    margin-left: 5px;
+    text-decoration: line-through;
+  }
+}

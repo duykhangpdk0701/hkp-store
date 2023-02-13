@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+
+.title {
+  margin-bottom: 0 !important;
+}

@@ -1,0 +1,32 @@
+.container {
+  min-height: 800px;
+  height: 100vh;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem 25px;
+}
+
+.registerText {
+  text-align: end;
+  font-weight: 500;
+}
+
+.registerTextLink {
+  margin-left: 7px;
+}
+
+.imageContainer {
+  height: 100%;
+}
+
+.image,
+.image > img {
+  height: 100% !important;
+  width: 100% !important;
+  object-fit: cover !important;
+  object-position: bottom;
+}

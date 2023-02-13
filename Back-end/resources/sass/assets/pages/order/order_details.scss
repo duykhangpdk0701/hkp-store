@@ -1,0 +1,18 @@
+.order-details {
+    &__item {
+        &-heading {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    &__info {
+        display: grid;
+        grid-row-gap: 0.5rem;
+        &-item {
+            grid-gap: 0.5rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+        }
+    }
+}

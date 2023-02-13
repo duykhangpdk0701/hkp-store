@@ -1,0 +1,23 @@
+.radio {
+  .ant-radio {
+    display: none !important;
+  }
+
+  span:nth-child(2) {
+    padding: 0;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.ant-form-item-label {
+  label {
+    width: 100% !important;
+  }
+}
+
+.ant-checkbox {
+  display: none !important;
+}

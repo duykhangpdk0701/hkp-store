@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+
+.title {
+  margin-bottom: 0 !important;
+}
+
+.forgotPasswordWrapper {
+  text-align: end;
+}
+
+.thirdLoginWrapperTextWrapper {
+  display: flex !important;
+  align-items: center;
+
+  .thirdLoginWrapperText {
+    display: block;
+    font-weight: bold;
+  }
+}
