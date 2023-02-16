@@ -53,7 +53,7 @@ const ProductDetail = () => {
     const { color, size, quantity } = values;
     if (productQuery.data) {
       const productVariant = productQuery.data.variants.find((value) => {
-        return value.color_id === color && value.size_id === size;
+        return value.color_id == color && value.size_id == size;
       });
       if (productVariant) {
         addToCartMutation.mutate({

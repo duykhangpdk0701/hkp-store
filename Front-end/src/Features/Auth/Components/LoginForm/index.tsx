@@ -39,6 +39,22 @@ const LoginForm: FC<ILoginForm> = (props) => {
             <Title className={styles.title}>Sign In</Title>
             <Text>Join us to get some fancy clothes</Text>
           </Form.Item>
+          <Alert
+            className="mb-5"
+            message="Login account"
+            description={
+              <>
+                <div>
+                  <strong>email:</strong> superadmin@hkp.vn
+                </div>
+                <div>
+                  <strong>password:</strong> Pdk@073101
+                </div>
+              </>
+            }
+            type="info"
+            showIcon
+          />
 
           {alertText ? (
             <Form.Item>

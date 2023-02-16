@@ -9,6 +9,7 @@ use App\Http\Requests\Brand\UpdateBrandRequest;
 use App\Models\Brand;
 use App\Repositories\Brand\BrandRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 
 class BrandController extends Controller
@@ -30,7 +31,7 @@ class BrandController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -41,7 +42,7 @@ class BrandController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -51,11 +52,12 @@ class BrandController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreBrandRequest $request
+     * @return Response
      */
-    public function store(StoreBrandRequest $request)
+    public function store(StoreBrandRequest $request): Response
     {
+        $request->
         $result = $this->brandRepository->create($request->validated());
         session()->flash(NOTIFICATION_SUCCESS, __('success.brand.store', ['brand' => $result->name]));
         return redirect()->route('admin.brand.index');
@@ -65,7 +67,7 @@ class BrandController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Brand  $brand
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Brand $brand)
     {
@@ -76,7 +78,7 @@ class BrandController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Brand  $brand
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Brand $brand)
     {
@@ -86,9 +88,9 @@ class BrandController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  \App\Models\Brand  $brand
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(UpdateBrandRequest $request, Brand $brand)
     {
@@ -101,7 +103,7 @@ class BrandController extends Controller
      * Update the specified resource status in storage.
      *
      * @param  \App\Models\Brand  $brand
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function toggleStatus(Brand $brand)
     {
@@ -113,7 +115,7 @@ class BrandController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Brand  $brand
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Brand $brand)
     {

@@ -2,7 +2,6 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import { Row, Col, Button, Popover, Image, Avatar } from "antd";
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import SearchInput from "../../Components/SearchInput";
 import PopoverContent from "./Components/PopoverContent";
 import styles from "./Header.module.scss";
 import logo from "../../Assets/logo.png";
@@ -75,7 +74,7 @@ const Header = () => {
                   >
                     <Link to="/cart">
                       <Button shape="round" icon={<ShoppingCartOutlined />}>
-                        {cart.data?.quote_detail.length || 0} Item
+                        {cart?.data?.quote_detail?.length || 0} Item
                       </Button>
                     </Link>
                   </Popover>

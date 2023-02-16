@@ -19,15 +19,15 @@ const OrderSummary: FC<IOrderSummary> = (props) => {
         <div className="font-semibold mb-4 font-base">Total</div>
         <div className="mb-2 flex text-xs">
           <span className="basis-full">Sub Total</span>
-          <span className="ml-4">{toVND(totalPrice)}</span>
+          <span className="ml-4 whitespace-nowrap">{toVND(totalPrice)}</span>
         </div>
         <div className="mb-2 flex text-xs">
           <span className="basis-full">Shipping fee</span>
-          <span className="ml-4">{toVND(totalShipping)}</span>
+          <span className="ml-4 whitespace-nowrap">{toVND(totalShipping)}</span>
         </div>
         <div className="mb-2 flex text-xs font-bold">
           <span className="basis-full">Total</span>
-          <span className="ml-4">{toVND(total)}</span>
+          <span className="ml-4 whitespace-nowrap">{toVND(total)}</span>
         </div>
       </div>
       <div className="mt-5 mx-6">
